@@ -8,12 +8,23 @@ public class ExchangeRateDTO {
     @NotBlank
     private String targetCurrency;
 
+    private Double exchangeRate;
+
+    public ExchangeRateDTO(String sourceCurrency, String targetCurrency, Double exchangeRate) {
+        this.sourceCurrency = sourceCurrency;
+        this.targetCurrency = targetCurrency;
+        this.exchangeRate = exchangeRate;
+    }
+
     public ExchangeRateDTO() {
     }
 
-    public ExchangeRateDTO(String sourceCurrency, String targetCurrency) {
-        this.sourceCurrency = sourceCurrency;
-        this.targetCurrency = targetCurrency;
+    public Double getExchangeRate() {
+        return this.exchangeRate;
+    }
+
+    public void setExchangeRate(Double exchangeRate) {
+        this.exchangeRate = exchangeRate;
     }
 
     public String getSourceCurrency() {

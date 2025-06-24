@@ -27,3 +27,7 @@ logging:
     blog: WARN
 server:
   port: 8080
+currencylayer:
+  api:
+    key: ${api_key}
+    base-url: https://api.currencylayer.com
