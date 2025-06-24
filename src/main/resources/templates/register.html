@@ -14,18 +14,18 @@
                  placeholder="Place username here"
                  th:field="*{username}"
                  th:errorclass="'is-invalid alert-danger'">
-          <!-- <div th:each="error: ${#fields.errors('username')}" th:text="${error}" class="text-danger">Error messages</div> -->
+           <div th:each="error: ${#fields.errors('username')}" th:text="${error}" class="text-danger">Error messages</div>
           <label for="username" class="form-label">Username</label>
         </div>
-        <!-- <p th:if="${doesUsernameExists}" class="errors alert alert-danger mt-3">
+         <p th:if="${doesUsernameExists}" class="errors alert alert-danger mt-3">
             This username exists. Try again with another one.
-        </p> -->
+        </p>
         <div class="form-floating mt-3">
           <input type="text" id="password" class="form-control"
                  placeholder="Place password here"
                  th:field="*{password}"
                  th:errorclass="'is-invalid alert-danger'">
-          <!-- <div th:each="error: ${#fields.errors('password')}" th:text="${error}" class="text-danger">Error messages</div> -->
+           <div th:each="error: ${#fields.errors('password')}" th:text="${error}" class="text-danger">Error messages</div>
           <label for="password" class="form-label">Password</label>
         </div>
         <div class="form-floating mt-3">
@@ -33,12 +33,12 @@
                  placeholder="Place confirm password here"
                  th:field="*{confirmPassword}"
                  th:errorclass="'is-invalid alert-danger'">
-          <!-- <div th:each="error: ${#fields.errors('confirmPassword')}" th:text="${error}" class="text-danger">Error messages</div> -->
+           <div th:each="error: ${#fields.errors('confirmPassword')}" th:text="${error}" class="text-danger">Error messages</div>
           <label for="confirm_password" class="form-label">Confirm password</label>
         </div>
-        <!-- <p th:if="${hasPasswordErrors}" class="errors alert alert-danger mt-3">
+        <p th:if="${hasPasswordErrors}" class="errors alert alert-danger mt-3">
             Password and confirm password are not the same.
-        </p> -->
+        </p>
         <div class="text-center">
           <button class="mt-3 btn btn-success rounded-5 mb-3">Register</button>
         </div>
