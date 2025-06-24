@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="fragments/commons::head"></head>
+<body class="main-background">
+<header th:replace="fragments/commons::header"></header>
+<div class="container position-absolute top-50 start-50 translate-middle">
+    <div class="row mt-5">
+        <div class="col-1"></div>
+        <div class="col-10 bg-overlay rounded">
+            <div class="container">
+                <div class="row">
+                    <div class="col-8">
+                        <h3 class="text-center fs-1 text-white">Conversion History</h3>
+                    </div>
+                    <div class="col-4">
+                        <form th:action="@{/history/search}" th:method="GET">
+                            <div class="form-floating-sm mt-3">
+                                <input type="text" id="search" class="form-control" placeholder="Search" th:field="*{search}">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="row">
+                    <table class="table table-hover table-bordered shadow-sm mt-4 custom-table">
+                        <thead class="table-primary">
+                        <tr>
+                            <th>Transaction identifier</th>
+                            <th>Date/Time</th>
+                            <th>Source currency</th>
+                            <th>Target currency</th>
+                            <th>Quantity</th>
+                            <th>Price per unit</th>
+                            <th>Total Amount</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="conversion : ${conversionsList}">
+                            <td th:text="${conversion.identifier}">100000</td>
+                            <td th:text="${#temporals.format(conversion.timestamp, 'dd-MM-yyyy HH:mm:ss')}">24-06-2025 11:49</td>
+                            <td th:text="${conversion.source}">USD</td>
+                            <td th:text="${conversion.target}">EUR</td>
+                            <td th:text="${#numbers.formatDecimal(conversion.quantity, 1, 2)}">100</td>
+                            <td th:text="${#numbers.formatDecimal(conversion.pricePerUnit, 1, 2)}">0,86</td>
+                            <td th:text="${#numbers.formatDecimal(conversion.totalAmount, 1, 2)}">86,26</td>
+                        </tr>
+                        <tr th:each="conversion : ${conversionsList}">
+                            <td th:text="${conversion.identifier}">100001</td>
+                            <td th:text="${#temporals.format(conversion.timestamp, 'dd-MM-yyyy HH:mm:ss')}">24-06-2025 11:49</td>
+                            <td th:text="${conversion.source}">USD</td>
+                            <td th:text="${conversion.target}">EUR</td>
+                            <td th:text="${#numbers.formatDecimal(conversion.quantity, 1, 2)}">100</td>
+                            <td th:text="${#numbers.formatDecimal(conversion.pricePerUnit, 1, 2)}">0,86</td>
+                            <td th:text="${#numbers.formatDecimal(conversion.totalAmount, 1, 2)}">86,26</td>
+                        </tr>
+                        <tr th:each="conversion : ${conversionsList}">
+                            <td th:text="${conversion.identifier}">100002</td>
+                            <td th:text="${#temporals.format(conversion.timestamp, 'dd-MM-yyyy HH:mm:ss')}">24-06-2025 11:49</td>
+                            <td th:text="${conversion.source}">USD</td>
+                            <td th:text="${conversion.target}">EUR</td>
+                            <td th:text="${#numbers.formatDecimal(conversion.quantity, 1, 2)}">100</td>
+                            <td th:text="${#numbers.formatDecimal(conversion.pricePerUnit, 1, 2)}">0,86</td>
+                            <td th:text="${#numbers.formatDecimal(conversion.totalAmount, 1, 2)}">86,26</td>
+                        </tr>
+                        <tr th:each="conversion : ${conversionsList}">
+                            <td th:text="${conversion.identifier}">100003</td>
+                            <td th:text="${#temporals.format(conversion.timestamp, 'dd-MM-yyyy HH:mm:ss')}">24-06-2025 11:49</td>
+                            <td th:text="${conversion.source}">USD</td>
+                            <td th:text="${conversion.target}">EUR</td>
+                            <td th:text="${#numbers.formatDecimal(conversion.quantity, 1, 2)}">100</td>
+                            <td th:text="${#numbers.formatDecimal(conversion.pricePerUnit, 1, 2)}">0,86</td>
+                            <td th:text="${#numbers.formatDecimal(conversion.totalAmount, 1, 2)}">86,26</td>
+                        </tr>
+                        <tr th:each="conversion : ${conversionsList}">
+                            <td th:text="${conversion.identifier}">100004</td>
+                            <td th:text="${#temporals.format(conversion.timestamp, 'dd-MM-yyyy HH:mm:ss')}">24-06-2025 11:49</td>
+                            <td th:text="${conversion.source}">USD</td>
+                            <td th:text="${conversion.target}">EUR</td>
+                            <td th:text="${#numbers.formatDecimal(conversion.quantity, 1, 2)}">100</td>
+                            <td th:text="${#numbers.formatDecimal(conversion.pricePerUnit, 1, 2)}">0,86</td>
+                            <td th:text="${#numbers.formatDecimal(conversion.totalAmount, 1, 2)}">86,26</td>
+                        </tr>
+                        <tr th:each="conversion : ${conversionsList}">
+                            <td th:text="${conversion.identifier}">100005</td>
+                            <td th:text="${#temporals.format(conversion.timestamp, 'dd-MM-yyyy HH:mm:ss')}">24-06-2025 11:49</td>
+                            <td th:text="${conversion.source}">USD</td>
+                            <td th:text="${conversion.target}">EUR</td>
+                            <td th:text="${#numbers.formatDecimal(conversion.quantity, 1, 2)}">100</td>
+                            <td th:text="${#numbers.formatDecimal(conversion.pricePerUnit, 1, 2)}">0,86</td>
+                            <td th:text="${#numbers.formatDecimal(conversion.totalAmount, 1, 2)}">86,26</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-1"></div>
+    </div>
+</div>
+</body>
+</html>

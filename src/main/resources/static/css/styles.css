@@ -1,0 +1,48 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    min-height: 100vh;
+    position: relative;
+}
+
+body.login-background {
+    background-image: url('/images/loginBackground.webp');
+}
+
+body.main-background {
+    background-image: url('/images/homePageImage.webp');
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: -1;
+}
+
+.custom-table thead th {
+     text-align: center;
+     vertical-align: middle;
+     font-weight: bold;
+     font-size: 1rem;
+     background-color: #cfe2ff;
+     color: #003865;
+ }
+
+ .custom-table td {
+     text-align: center;
+     vertical-align: middle;
+     font-size: 0.95rem;
+     background-color: rgba(255, 255, 255, 0.95);
+ }
+
+ .custom-table tbody tr:hover {
+     background-color: #e2f0ff;
+ }

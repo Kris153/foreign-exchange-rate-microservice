@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class FxserviceApplication {
+public class FXServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(FxserviceApplication.class, args);
+		SpringApplication.run(FXServiceApplication.class, args);
 	}
 
 }
