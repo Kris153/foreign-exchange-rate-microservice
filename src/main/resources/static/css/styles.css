@@ -16,6 +16,10 @@ body.main-background {
     background-image: url('/images/homePageImage.webp');
 }
 
+body.error-background {
+    background-image: url('/images/error.png');
+}
+
 body::before {
     content: "";
     position: fixed;
