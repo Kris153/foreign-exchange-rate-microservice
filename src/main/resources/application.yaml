@@ -18,7 +18,9 @@ spring:
     url: jdbc:mysql://localhost:3306/fxservice?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true&serverTimezone=UTC
   cache:
     cache-names: currencies, rates
-    type: simple
+    type: caffeine
+    caffeine:
+      spec: expireAfterWrite=5m
 logging:
   level:
     org:
