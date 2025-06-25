@@ -2,11 +2,15 @@ package com.example.fxservice.service.impl;
 
 import com.example.fxservice.config.CurrencyApiConfig;
 import com.example.fxservice.model.dtos.CurrencyLayerResponseDTO;
+import com.example.fxservice.model.dtos.CurrencyListResponseDTO;
 import com.example.fxservice.service.ConversionService;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class ConversionServiceImpl implements ConversionService {
@@ -17,9 +21,9 @@ public class ConversionServiceImpl implements ConversionService {
         this.restClient = currencyLayerRestClient;
         this.apiKey = config.getKey();
     }
-
+    @Cacheable(cacheNames = "rates", key = "#sourceCurrency + '_' + #targetCurrency")
     @Override
-    public Optional<Double> getExchangeRate(String sourceCurrency, String targetCurrency) {
+    public CurrencyLayerResponseDTO getExchangeRate(String sourceCurrency, String targetCurrency) {
         CurrencyLayerResponseDTO response = restClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/live")
@@ -31,17 +35,47 @@ public class ConversionServiceImpl implements ConversionService {
                 )
                 .retrieve()
                 .body(CurrencyLayerResponseDTO.class);
-
         if (response == null || !response.isSuccess()) {
-            return Optional.empty();
+            String error = "Failed to get exchange rate: " + (response != null ? response.getError() : "No response");
+            if(response == null){
+                response = new CurrencyLayerResponseDTO();
+            }
+            if (response.getError() == null){
+                response.setError(new CurrencyLayerResponseDTO.ErrorResponse());
+            }
+            response.getError().setInfo(error);
+            response.setSuccess(false);
+            return response;
         }
 
         String rateKey = sourceCurrency.toUpperCase() + targetCurrency.toUpperCase();
 
         if (response.getQuotes() == null || !response.getQuotes().containsKey(rateKey)) {
-            return Optional.empty();
+            if (response.getError() == null){
+                response.setError(new CurrencyLayerResponseDTO.ErrorResponse());
+            }
+            response.getError().setInfo("Exchange rate for " + rateKey + " not found.");
+            response.setSuccess(false);
+            return response;
         }
 
-        return Optional.of(response.getQuotes().get(rateKey));
+        return response;
     }
+    @CacheEvict(cacheNames = "rates", key = "#sourceCurrency + '_' + #targetCurrency")
+    public void clearRateCache(String sourceCurrency, String targetCurrency) {}
+    @Cacheable("currencies")
+    public Set<String> getSupportedCurrencies() {
+        CurrencyListResponseDTO response = restClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/list")
+                        .queryParam("access_key", apiKey)
+                        .build())
+                .retrieve()
+                .body(CurrencyListResponseDTO.class);
+
+        return response != null && response.isSuccess() ? response.getCurrencies().keySet() : Set.of();
+    }
+    @CacheEvict("currencies")
+    public void clearCurrencyCache() {}
+
 }

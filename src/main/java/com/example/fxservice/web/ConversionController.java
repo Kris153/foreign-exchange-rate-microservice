@@ -1,6 +1,7 @@
 package com.example.fxservice.web;
 
 import com.example.fxservice.model.dtos.CurrencyConversionDTO;
+import com.example.fxservice.model.dtos.CurrencyLayerResponseDTO;
 import com.example.fxservice.model.dtos.ExchangeRateDTO;
 import com.example.fxservice.service.ConversionService;
 import jakarta.validation.Valid;
@@ -36,6 +37,10 @@ public class ConversionController {
     public Double addExchangeRateValueToModel(){
         return null;
     }
+    @ModelAttribute("errorMessage")
+    public String addErrorMessageValueToModel(){
+        return "";
+    }
     @GetMapping("/conversion")
     public String viewConversion() {
         return "conversion";
@@ -49,18 +54,26 @@ public class ConversionController {
             return "redirect:/";
         }
         if(exchangeRateDTO.getSourceCurrency().equals(exchangeRateDTO.getTargetCurrency())){
-            redirectAttributes.addFlashAttribute("successfulGetExchangeRate", true);
-            redirectAttributes.addFlashAttribute("exchangeRate", 1);
-            redirectAttributes.addFlashAttribute("exchangeRateData", exchangeRateDTO);
-        }else{
-            Optional<Double> exchangeRate = this.conversionService.getExchangeRate(exchangeRateDTO.getSourceCurrency(), exchangeRateDTO.getTargetCurrency());
-            if(exchangeRate.isPresent()){
+            if(this.conversionService.getSupportedCurrencies().contains(exchangeRateDTO.getSourceCurrency().toUpperCase())){
                 redirectAttributes.addFlashAttribute("successfulGetExchangeRate", true);
-                redirectAttributes.addFlashAttribute("exchangeRate", exchangeRate.get());
+                redirectAttributes.addFlashAttribute("exchangeRate", 1);
                 redirectAttributes.addFlashAttribute("exchangeRateData", exchangeRateDTO);
             }else{
                 redirectAttributes.addFlashAttribute("unsuccessfulGetExchangeRate", true);
                 redirectAttributes.addFlashAttribute("exchangeRateData", exchangeRateDTO);
+                redirectAttributes.addFlashAttribute("errorMessage", "There is no such currency");
+            }
+        }else{
+            CurrencyLayerResponseDTO response = this.conversionService.getExchangeRate(exchangeRateDTO.getSourceCurrency(), exchangeRateDTO.getTargetCurrency());
+            if(response.isSuccess()){
+                redirectAttributes.addFlashAttribute("successfulGetExchangeRate", true);
+                String rateKey = exchangeRateDTO.getSourceCurrency().toUpperCase() + exchangeRateDTO.getTargetCurrency().toUpperCase();
+                redirectAttributes.addFlashAttribute("exchangeRate", response.getQuotes().get(rateKey));
+                redirectAttributes.addFlashAttribute("exchangeRateData", exchangeRateDTO);
+            }else{
+                redirectAttributes.addFlashAttribute("unsuccessfulGetExchangeRate", true);
+                redirectAttributes.addFlashAttribute("exchangeRateData", exchangeRateDTO);
+                redirectAttributes.addFlashAttribute("errorMessage", response.getError().getInfo());
             }
         }
         return "redirect:/";
