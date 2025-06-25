@@ -3,9 +3,9 @@ package com.example.fxservice.model.dtos;
 import jakarta.validation.constraints.NotBlank;
 
 public class UserLoginDTO {
-    @NotBlank
+    @NotBlank(message = "This field should not be empty")
     private String username;
-    @NotBlank
+    @NotBlank(message = "This field should not be empty")
     private String password;
 
     public UserLoginDTO() {

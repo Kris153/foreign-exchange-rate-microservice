@@ -14,7 +14,7 @@
                            placeholder="Place source currency here"
                            th:field="*{sourceCurrency}"
                            th:errorclass="'is-invalid alert-danger'">
-                    <div th:each="error: ${#fields.errors('sourceCurrency')}" th:text="${error}" class="text-danger">Error messages</div>
+                    <div th:each="error: ${#fields.errors('sourceCurrency')}" th:text="${error}" class="text-danger fw-bold">Error messages</div>
                     <label for="sourceCurrency" class="form-label">From</label>
                 </div>
                 <div class="form-floating mt-3">
@@ -22,7 +22,7 @@
                            placeholder="Place target currency here"
                            th:field="*{targetCurrency}"
                            th:errorclass="'is-invalid alert-danger'">
-                    <div th:each="error: ${#fields.errors('targetCurrency')}" th:text="${error}" class="text-danger">Error messages</div>
+                    <div th:each="error: ${#fields.errors('targetCurrency')}" th:text="${error}" class="text-danger fw-bold">Error messages</div>
                     <label for="targetCurrency" class="form-label">To</label>
                 </div>
                 <div class="text-white fs-4 bg-secondary mt-3 text-center rounded-5" th:if="${successfulGetExchangeRate}">1 <span th:text="${#strings.toUpperCase(exchangeRateData.sourceCurrency)}">EUR</span> = <span th:text="${#numbers.formatDecimal(exchangeRate, 1, 4)}">1.9554</span>  <span th:text="${#strings.toUpperCase(exchangeRateData.targetCurrency)}">BGN</span></div>

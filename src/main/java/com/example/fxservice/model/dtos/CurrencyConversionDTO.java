@@ -5,10 +5,10 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 public class CurrencyConversionDTO {
-    @NotBlank
+    @NotBlank(message = "This field should not be empty")
     private String sourceCurrency;
 
-    @NotBlank
+    @NotBlank(message = "This field should not be empty")
     private String targetCurrency;
     @NotNull(message = "This field should not be empty")
     @Positive(message = "Quantity should be positive")

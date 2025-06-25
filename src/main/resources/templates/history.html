@@ -7,7 +7,17 @@
     <div class="row mt-5">
         <div class="col-1"></div>
         <div class="col-10 bg-overlay rounded">
-            <div class="container">
+            <div th:if="${#lists.isEmpty(conversionsList) and successfulSearch}">
+                <div class="text-center fs-1 text-white">Looks like you haven’t converted any currencies yet.</div>
+                <div class="text-center fs-1 text-white">Click <a th:href="@{/conversion}" class="text-info text-decoration-none">here</a> to start!</div>
+            </div>
+            <div th:if="${#lists.isEmpty(conversionsList) and !successfulSearch}">
+                <div class="text-center text-white mt-4 fs-1">
+                    Looks like there are no conversions matching your search.
+                    Want to try a new one? Click <a th:href="@{/conversion}" class="text-info text-decoration-none">here</a> to get started!
+                </div>
+            </div>
+            <div class="container" th:if="${!#lists.isEmpty(conversionsList)}">
                 <div class="row">
                     <div class="col-8">
                         <h3 class="text-center fs-1 text-white">Conversion History</h3>
@@ -15,7 +25,7 @@
                     <div class="col-4">
                         <form th:action="@{/history/search}" th:method="GET">
                             <div class="form-floating-sm mt-3">
-                                <input type="text" id="search" class="form-control" placeholder="Search">
+                                <input type="text" name="search" id="search" class="form-control" placeholder="Search">
                             </div>
                         </form>
                     </div>
@@ -34,61 +44,17 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td >100000</td>
-                            <td >24-06-2025 11:49</td>
-                            <td >USD</td>
-                            <td >EUR</td>
-                            <td >100</td>
-                            <td >0,86</td>
-                            <td >86,26</td>
+                        <tr th:each="conversion : ${conversionsList}">
+                            <td th:text="${conversion.transactionIdentifier}">100000</td>
+                            <td th:text="${#temporals.format(conversion.dateTime, 'dd-MM-yyyy HH:mm:ss')}">24-06-2025
+                                11:49
+                            </td>
+                            <td th:text="${conversion.sourceCurrency}">USD</td>
+                            <td th:text="${conversion.targetCurrency}">EUR</td>
+                            <td th:text="${#numbers.formatDecimal(conversion.quantity, 1, 2)}">100</td>
+                            <td th:text="${#numbers.formatDecimal(conversion.pricePerUnit, 1, 5)}">0,86</td>
+                            <td th:text="${#numbers.formatDecimal(conversion.totalAmount, 1, 2)}">86,26</td>
                         </tr>
-                        <tr>
-                            <td >100001</td>
-                            <td >24-06-2025 11:49</td>
-                            <td >USD</td>
-                            <td >EUR</td>
-                            <td >100</td>
-                            <td >0,86</td>
-                            <td >86,26</td>
-                        </tr>
-                        <tr>
-                            <td >100002</td>
-                            <td >24-06-2025 11:49</td>
-                            <td >USD</td>
-                            <td >EUR</td>
-                            <td >100</td>
-                            <td >0,86</td>
-                            <td >86,26</td>
-                        </tr>
-                        <tr>
-                            <td >100003</td>
-                            <td >24-06-2025 11:49</td>
-                            <td >USD</td>
-                            <td >EUR</td>
-                            <td >100</td>
-                            <td >0,86</td>
-                            <td >86,26</td>
-                        </tr>
-                        <tr>
-                            <td >100004</td>
-                            <td >24-06-2025 11:49</td>
-                            <td >USD</td>
-                            <td >EUR</td>
-                            <td >100</td>
-                            <td >0,86</td>
-                            <td >86,26</td>
-                        </tr>
-                        <tr>
-                            <td >100005</td>
-                            <td >24-06-2025 11:49</td>
-                            <td >USD</td>
-                            <td >EUR</td>
-                            <td >100</td>
-                            <td >0,86</td>
-                            <td >86,26</td>
-                        </tr>
-
                         </tbody>
                     </table>
                 </div>

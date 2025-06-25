@@ -6,6 +6,7 @@ import com.example.fxservice.model.dtos.CurrencyConversionDTO;
 import com.example.fxservice.model.dtos.CurrencyLayerResponseDTO;
 import com.example.fxservice.model.dtos.CurrencyListResponseDTO;
 import com.example.fxservice.model.entities.ConversionEntity;
+import com.example.fxservice.model.entities.UserEntity;
 import com.example.fxservice.repository.ConversionRepository;
 import com.example.fxservice.service.ConversionService;
 import com.example.fxservice.service.UserService;
@@ -17,8 +18,11 @@ import org.springframework.web.client.RestClient;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ConversionServiceImpl implements ConversionService {
@@ -115,7 +119,39 @@ public class ConversionServiceImpl implements ConversionService {
         return conversionToReturn;
     }
 
+    @Override
+    public List<ConversionHistoryDTO> getAllConversionsForUser() {
+        return this.conversionRepository.findByUser(this.userService.getCurrentUser()).stream().map(this::convertToConversionHistoryDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ConversionHistoryDTO> searchForConversions(String searchWord) {
+        UserEntity currentUser = this.userService.getCurrentUser();
+        List<ConversionEntity> byTransactionId = conversionRepository.findByTransactionIdentifierAndUser(searchWord, currentUser);
+        List<ConversionEntity> bySourceCurrency = conversionRepository.findBySourceCurrencyAndUser(searchWord.toUpperCase(), currentUser);
+        List<ConversionEntity> byTargetCurrency = conversionRepository.findByTargetCurrencyAndUser(searchWord.toUpperCase(), currentUser);
+
+        Set<ConversionEntity> allResults = new HashSet<>();
+        allResults.addAll(byTransactionId);
+        allResults.addAll(bySourceCurrency);
+        allResults.addAll(byTargetCurrency);
+
+        return allResults.stream().map(this::convertToConversionHistoryDto).collect(Collectors.toList());
+    }
+
     @CacheEvict("currencies")
     public void clearCurrencyCache() {}
+
+    private ConversionHistoryDTO convertToConversionHistoryDto(ConversionEntity entity) {
+        ConversionHistoryDTO dto = new ConversionHistoryDTO();
+        dto.setTransactionIdentifier(entity.getTransactionIdentifier());
+        dto.setSourceCurrency(entity.getSourceCurrency());
+        dto.setTargetCurrency(entity.getTargetCurrency());
+        dto.setTotalAmount(entity.getTotalAmount());
+        dto.setQuantity(entity.getQuantity());
+        dto.setDateTime(entity.getDateTime());
+        dto.setPricePerUnit(entity.getPricePerUnit());
+        return dto;
+    }
 
 }

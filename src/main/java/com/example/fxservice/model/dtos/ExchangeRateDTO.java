@@ -3,9 +3,9 @@ package com.example.fxservice.model.dtos;
 import jakarta.validation.constraints.NotBlank;
 
 public class ExchangeRateDTO {
-    @NotBlank
+    @NotBlank(message = "This field should not be empty")
     private String sourceCurrency;
-    @NotBlank
+    @NotBlank(message = "This field should not be empty")
     private String targetCurrency;
 
     private Double exchangeRate;

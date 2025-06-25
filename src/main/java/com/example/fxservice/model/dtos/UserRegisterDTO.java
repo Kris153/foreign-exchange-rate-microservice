@@ -3,11 +3,11 @@ package com.example.fxservice.model.dtos;
 import jakarta.validation.constraints.NotBlank;
 
 public class UserRegisterDTO {
-    @NotBlank
+    @NotBlank(message = "This field should not be empty")
     private String username;
-    @NotBlank
+    @NotBlank(message = "This field should not be empty")
     private String password;
-    @NotBlank
+    @NotBlank(message = "This field should not be empty")
     private String confirmPassword;
 
     public UserRegisterDTO(String username, String password, String confirmPassword) {
