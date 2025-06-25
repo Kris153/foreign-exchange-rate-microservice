@@ -31,7 +31,7 @@ public class ConversionEntity {
     private Double totalAmount;
 
     @Column(nullable = false, unique = true, name = "transaction_identifier")
-    private Integer transactionIdentifier;
+    private String transactionIdentifier;
 
     @ManyToOne
     private UserEntity user;
@@ -39,7 +39,7 @@ public class ConversionEntity {
     public ConversionEntity() {
     }
 
-    public ConversionEntity(Integer id, Instant dateTime, String sourceCurrency, String targetCurrency, Double quantity, Double pricePerUnit, Double totalAmount, Integer transactionIdentifier, UserEntity user) {
+    public ConversionEntity(Integer id, Instant dateTime, String sourceCurrency, String targetCurrency, Double quantity, Double pricePerUnit, Double totalAmount, String transactionIdentifier, UserEntity user) {
         this.id = id;
         this.dateTime = dateTime;
         this.sourceCurrency = sourceCurrency;
@@ -107,11 +107,11 @@ public class ConversionEntity {
         this.totalAmount = totalAmount;
     }
 
-    public Integer getTransactionIdentifier() {
+    public String getTransactionIdentifier() {
         return this.transactionIdentifier;
     }
 
-    public void setTransactionIdentifier(Integer transactionIdentifier) {
+    public void setTransactionIdentifier(String transactionIdentifier) {
         this.transactionIdentifier = transactionIdentifier;
     }
 

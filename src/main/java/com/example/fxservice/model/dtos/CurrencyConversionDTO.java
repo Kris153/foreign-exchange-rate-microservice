@@ -1,6 +1,7 @@
 package com.example.fxservice.model.dtos;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 public class CurrencyConversionDTO {
@@ -9,9 +10,8 @@ public class CurrencyConversionDTO {
 
     @NotBlank
     private String targetCurrency;
-
-    @NotBlank
-    @Positive
+    @NotNull(message = "This field should not be empty")
+    @Positive(message = "Quantity should be positive")
     private Double quantity;
 
     public CurrencyConversionDTO() {

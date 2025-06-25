@@ -14,7 +14,7 @@
                            placeholder="Place quantity here"
                            th:field="*{quantity}"
                            th:errorclass="'is-invalid alert-danger'">
-
+                    <div th:each="error: ${#fields.errors('quantity')}" th:text="${error}" class="text-danger">Error messages</div>
                     <label for="quantity" class="form-label">Quantity</label>
                 </div>
                 <div class="form-floating mt-3">
@@ -22,6 +22,7 @@
                            placeholder="Place source currency here"
                            th:field="*{sourceCurrency}"
                            th:errorclass="'is-invalid alert-danger'">
+                    <div th:each="error: ${#fields.errors('sourceCurrency')}" th:text="${error}" class="text-danger">Error messages</div>
                     <label for="sourceCurrency" class="form-label">From</label>
                 </div>
                 <div class="form-floating mt-3">
@@ -29,15 +30,46 @@
                            placeholder="Place target currency here"
                            th:field="*{targetCurrency}"
                            th:errorclass="'is-invalid alert-danger'">
-
+                    <div th:each="error: ${#fields.errors('targetCurrency')}" th:text="${error}" class="text-danger">Error messages</div>
                     <label for="targetCurrency" class="form-label">To</label>
                 </div>
+                <div class="text-white fs-4 bg-danger mt-3 text-center rounded-5 p-2" th:if="${unsuccessfulGetExchangeRate}" th:text="${errorMessage}">An error occurred</div>
                 <div class="text-center">
                     <button class="mt-3 btn btn-dark mb-3 fs-5">Calculate</button>
                 </div>
             </form>
         </div>
         <div class="col-4"></div>
+        <div class="row" th:if="${successfulGetExchangeRate}">
+            <div class="col-1"></div>
+            <div class="col-10">
+                <table class="table table-hover table-bordered shadow-sm mt-4 custom-table">
+                    <thead class="table-primary">
+                    <tr>
+                        <th>Transaction identifier</th>
+                        <th>Date/Time</th>
+                        <th>Source currency</th>
+                        <th>Target currency</th>
+                        <th>Quantity</th>
+                        <th>Price per unit</th>
+                        <th>Total Amount</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td th:text="${savedConversion.transactionIdentifier}">100000</td>
+                        <td th:text="${#temporals.format(savedConversion.dateTime, 'dd-MM-yyyy HH:mm:ss')}">24-06-2025 11:49</td>
+                        <td th:text="${savedConversion.sourceCurrency}">USD</td>
+                        <td th:text="${savedConversion.targetCurrency}">EUR</td>
+                        <td th:text="${#numbers.formatDecimal(savedConversion.quantity, 1, 2)}">100</td>
+                        <td th:text="${#numbers.formatDecimal(savedConversion.pricePerUnit, 1, 5)}">0,86</td>
+                        <td th:text="${#numbers.formatDecimal(savedConversion.totalAmount, 1, 2)}">86,26</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-1"></div>
+        </div>
     </div>
 </div>
 </body>

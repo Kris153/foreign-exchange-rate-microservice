@@ -1,25 +1,37 @@
 package com.example.fxservice.service.impl;
 
 import com.example.fxservice.config.CurrencyApiConfig;
+import com.example.fxservice.model.dtos.ConversionHistoryDTO;
+import com.example.fxservice.model.dtos.CurrencyConversionDTO;
 import com.example.fxservice.model.dtos.CurrencyLayerResponseDTO;
 import com.example.fxservice.model.dtos.CurrencyListResponseDTO;
+import com.example.fxservice.model.entities.ConversionEntity;
+import com.example.fxservice.repository.ConversionRepository;
 import com.example.fxservice.service.ConversionService;
+import com.example.fxservice.service.UserService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
-import java.util.Optional;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 public class ConversionServiceImpl implements ConversionService {
     private final RestClient restClient;
     private final String apiKey;
+    private final ConversionRepository conversionRepository;
+    private final UserService userService;
 
-    public ConversionServiceImpl(RestClient currencyLayerRestClient, CurrencyApiConfig config) {
+    public ConversionServiceImpl(RestClient currencyLayerRestClient, CurrencyApiConfig config, ConversionRepository conversionRepository, UserService userService) {
         this.restClient = currencyLayerRestClient;
         this.apiKey = config.getKey();
+        this.conversionRepository = conversionRepository;
+        this.userService = userService;
     }
     @Cacheable(cacheNames = "rates", key = "#sourceCurrency + '_' + #targetCurrency")
     @Override
@@ -75,6 +87,34 @@ public class ConversionServiceImpl implements ConversionService {
 
         return response != null && response.isSuccess() ? response.getCurrencies().keySet() : Set.of();
     }
+
+    @Override
+    public ConversionHistoryDTO saveConversion(CurrencyConversionDTO currencyConversionDTO, Double exchangeRate) {
+        ConversionEntity conversionToSave = new ConversionEntity();
+        ConversionHistoryDTO conversionToReturn = new ConversionHistoryDTO();
+
+        conversionToSave.setDateTime(Instant.now());
+        conversionToSave.setSourceCurrency(currencyConversionDTO.getSourceCurrency().toUpperCase());
+        conversionToSave.setTargetCurrency(currencyConversionDTO.getTargetCurrency().toUpperCase());
+        conversionToSave.setQuantity(currencyConversionDTO.getQuantity());
+        conversionToSave.setPricePerUnit(exchangeRate);
+        conversionToSave.setTotalAmount(currencyConversionDTO.getQuantity() * exchangeRate);
+        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmssSSS"));
+        String shortUuid = UUID.randomUUID().toString().replace("-", "").substring(0, 8).toUpperCase();
+        conversionToSave.setTransactionIdentifier("CONV-" + timestamp + "-" + shortUuid);
+        conversionToSave.setUser(this.userService.getCurrentUser());
+        this.conversionRepository.saveAndFlush(conversionToSave);
+
+        conversionToReturn.setDateTime(conversionToSave.getDateTime());
+        conversionToReturn.setSourceCurrency(conversionToSave.getSourceCurrency());
+        conversionToReturn.setTargetCurrency(conversionToSave.getTargetCurrency());
+        conversionToReturn.setQuantity(conversionToSave.getQuantity());
+        conversionToReturn.setPricePerUnit(conversionToSave.getPricePerUnit());
+        conversionToReturn.setTotalAmount(conversionToSave.getTotalAmount());
+        conversionToReturn.setTransactionIdentifier(conversionToSave.getTransactionIdentifier());
+        return conversionToReturn;
+    }
+
     @CacheEvict("currencies")
     public void clearCurrencyCache() {}
 
